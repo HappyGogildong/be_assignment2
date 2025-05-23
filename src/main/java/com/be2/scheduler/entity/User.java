@@ -1,22 +1,26 @@
 package com.be2.scheduler.entity;
 
-import jakarta.persistence.*;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+import java.time.LocalDate;
+
 
 @Getter
 @AllArgsConstructor
 public class User {
 
-
     private Long userId;
-    private final String id;
     private String password;
+    private String username;
     private String email;
+    private LocalDate createdAt;
+    private LocalDate modifiedAt;
 
-    public User(String id, String password, String email) {
-        this.id = id;
+    public User(String username, String password, String email) {
+        this.username = username;
         this.password = password;
         this.email = email;
     }

@@ -11,12 +11,12 @@ public class ScheduleResponseDto {
 
     private final Long scheduleId;
 
-    private String username;
+    private final String username;
 
-    private String title;
+    private final String title;
 
-    private LocalDate createdAt;
+    private final LocalDate createdAt;
 
-    private LocalDate modifiedAt;
+    private final LocalDate modifiedAt;
 
 }

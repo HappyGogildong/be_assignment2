@@ -4,22 +4,24 @@ import lombok.Getter;
 
 @Getter
 public class CreateScheduleRequestDto {
+    private final String username;
 
-    private final Long  id;
+    private final Long userId;
 
-    private final Long user_id;
+    private final String title;
 
-    private String title;
+    private final String contents;
 
-    private String content;
 
-    private String username;
+    private final String password;
 
-    public CreateScheduleRequestDto(Long id, Long user_id, String title, String content, String username) {
-        this.id = id;
-        this.user_id = user_id;
-        this.title = title;
-        this.content = content;
+
+    public CreateScheduleRequestDto(Long userId, String username, String title, String contents, String password) {
+
+        this.userId = userId;
         this.username = username;
+        this.title = title;
+        this.contents = contents;
+        this.password = password;
     }
 }

@@ -10,4 +10,8 @@ public class CreateScheduleResponseDto {
 
     private final String message;
 
+    private final Long scheduleId;
+
+    private final String username;
+
 }

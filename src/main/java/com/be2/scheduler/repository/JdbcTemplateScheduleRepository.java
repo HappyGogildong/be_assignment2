@@ -6,6 +6,7 @@ import com.be2.scheduler.entity.Schedule;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +14,8 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Repository
 public class JdbcTemplateScheduleRepository implements ScheduleRepository {
@@ -28,14 +27,16 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     }
     //전체(여러 개)일정 반환용 매퍼
     private RowMapper<Schedule> scheduleRowMapper(){
-        return new RowMapper<Schedule>() {
+        return new RowMapper<>() {
 
             @Override
             public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new Schedule(
-                        rs.getString("title"),
-                        rs.getString("contents"),
+                        rs.getLong("userId"),
                         rs.getString("username"),
+                        rs.getString("title"),
+                        rs.getString("password"),
+                        rs.getString("contents"),
                         rs.getObject("createdAt", LocalDate.class),
                         rs.getObject("modifiedAt", LocalDate.class)
                         );
@@ -45,7 +46,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     //선택 일정 반환용 매퍼
     private RowMapper<ScheduleResponseDto> scheduleResponseDtoRowMapper(){
-        return new RowMapper<ScheduleResponseDto>() {
+        return new RowMapper<>() {
 
             @Override
             public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -68,7 +69,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
 
         //schedule테이블에 key값은 schedule_id로 하여 INSERT
-        jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("schedule_id");
+        jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("scheduleId");
 
         LocalDate currentDate = LocalDate.now();
         //attribute 넣기
@@ -76,30 +77,48 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         parameters.put("username", schedule.getUsername());
         parameters.put("title", schedule.getTitle());
         parameters.put("userId", schedule.getUserId());
+        parameters.put("password", schedule.getPassword());
         parameters.put("contents", schedule.getContents());
         parameters.put("createdAt", currentDate);
-        parameters.put("updatedAt", currentDate);
+        parameters.put("modifiedAt", currentDate);
 
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+        Long scheduleId = key.longValue();
 
         //파라미터 세팅하기 (반환 message)일 때
-        String message = "회원가입이 완료되었습니다";
+        String message = "일정생성이 완료되었습니다";
 
         //회원가입 반환 Dto
-        return new CreateScheduleResponseDto(message);
+        return new CreateScheduleResponseDto(message,scheduleId, schedule.getUsername());
 
     }
 
-    //선택 일정 조회
+    //선택 일정 조회(URL 일정id)
     @Override
-    public Schedule findById(Long scheduleId) {
-        return (Schedule) jdbcTemplate.query("select * from schedule where scheduleId = ?", scheduleRowMapper(), scheduleId);
+    public Optional<Schedule> findByScheduleId(Long scheduleId) {
+        return jdbcTemplate.query("select * from schedule where scheduleId = ?", scheduleRowMapper(), scheduleId)
+                .stream().findAny();
     }
 
     //전체 일정 조회(작성자명, 수정일) Lv2
     @Override
-    public List<ScheduleResponseDto> findAllByUsernameAndUpdatedAt(String username, LocalDate modifiedAt) {
-        return jdbcTemplate.query("select * from schedule where username = ? and modifiedAt = ?",scheduleResponseDtoRowMapper(), username, modifiedAt);
+    public List<ScheduleResponseDto> findAllByUsernameAndModifiedAt(String username, LocalDate modifiedAt) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM schedule WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (username != null && !username.isBlank()) {
+            sql.append(" AND username = ?");
+            params.add(username);
+        }
+
+        if (modifiedAt != null) {
+            sql.append(" AND modifiedAt = ?");
+            params.add(modifiedAt);
+        }
+
+        return jdbcTemplate.query(sql.toString(), scheduleResponseDtoRowMapper(), params.toArray());
     }
+
 
     //전체 일정 조회(작성자 id) Lv3
     @Override
