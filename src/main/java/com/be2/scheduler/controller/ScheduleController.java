@@ -3,10 +3,7 @@ package com.be2.scheduler.controller;
 import com.be2.scheduler.dto.schedules.request.CreateScheduleRequestDto;
 import com.be2.scheduler.dto.schedules.request.DeleteScheduleRequestDto;
 import com.be2.scheduler.dto.schedules.request.UpdateScheduleRequestDto;
-import com.be2.scheduler.dto.schedules.response.CreateScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.DeleteScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.ScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.UpdateScheduleResponseDto;
+import com.be2.scheduler.dto.schedules.response.*;
 import com.be2.scheduler.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -78,5 +75,14 @@ public class ScheduleController {
     @DeleteMapping("/schedules/{scheduleId}")
     public ResponseEntity<DeleteScheduleResponseDto> deleteSchedule(@PathVariable Long scheduleId, @RequestBody DeleteScheduleRequestDto requestDto){
         return new ResponseEntity<>(scheduleService.deleteSchedule(scheduleId, requestDto.getPassword()), HttpStatus.OK);
+    }
+
+    //페이지네이션 구현
+    @GetMapping("/schedules/pages")
+    public ResponseEntity<List<ScheduleResponseForPagingDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10", required = false) int size
+    ){
+        return new ResponseEntity<>(scheduleService.findAll(page, size), HttpStatus.OK);
     }
 }

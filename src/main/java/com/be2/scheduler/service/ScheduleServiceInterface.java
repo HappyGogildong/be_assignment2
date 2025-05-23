@@ -1,10 +1,7 @@
 package com.be2.scheduler.service;
 
 
-import com.be2.scheduler.dto.schedules.response.CreateScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.DeleteScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.ScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.UpdateScheduleResponseDto;
+import com.be2.scheduler.dto.schedules.response.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,4 +20,6 @@ public interface ScheduleServiceInterface {
     UpdateScheduleResponseDto updateSchedule(Long scheduleId, String password, String username, String contents);
     //선택 일정 삭제
     DeleteScheduleResponseDto deleteSchedule(Long scheduleId, String password);
+
+    List<ScheduleResponseForPagingDto> findAll(int page, int size);
 }

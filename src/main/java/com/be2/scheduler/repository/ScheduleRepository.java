@@ -2,6 +2,7 @@ package com.be2.scheduler.repository;
 
 import com.be2.scheduler.dto.schedules.response.CreateScheduleResponseDto;
 import com.be2.scheduler.dto.schedules.response.ScheduleResponseDto;
+import com.be2.scheduler.dto.schedules.response.ScheduleResponseForPagingDto;
 import com.be2.scheduler.entity.Schedule;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +33,5 @@ public interface ScheduleRepository {
     int deleteSchedule(Long scheduleId);
 
 
-
-
-
+    List<ScheduleResponseForPagingDto> findAll(int page, int size);
 }

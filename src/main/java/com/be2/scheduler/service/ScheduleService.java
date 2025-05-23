@@ -1,9 +1,6 @@
 package com.be2.scheduler.service;
 
-import com.be2.scheduler.dto.schedules.response.CreateScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.DeleteScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.ScheduleResponseDto;
-import com.be2.scheduler.dto.schedules.response.UpdateScheduleResponseDto;
+import com.be2.scheduler.dto.schedules.response.*;
 import com.be2.scheduler.entity.Schedule;
 import com.be2.scheduler.exception.InvalidPasswordException;
 import com.be2.scheduler.repository.ScheduleRepository;
@@ -78,5 +75,12 @@ public class ScheduleService implements ScheduleServiceInterface {
             return new DeleteScheduleResponseDto(message, scheduleId, username);
         }
         else throw new InvalidPasswordException("비밀번호가 일치하지 않습니다");
+    }
+
+    @Override
+    //페이징 일정 찾기
+    public List<ScheduleResponseForPagingDto> findAll(int page, int size) {
+
+        return scheduleRepository.findAll(page, size);
     }
 }

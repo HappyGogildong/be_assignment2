@@ -2,6 +2,7 @@ package com.be2.scheduler.repository;
 
 import com.be2.scheduler.dto.schedules.response.CreateScheduleResponseDto;
 import com.be2.scheduler.dto.schedules.response.ScheduleResponseDto;
+import com.be2.scheduler.dto.schedules.response.ScheduleResponseForPagingDto;
 import com.be2.scheduler.entity.Schedule;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -40,6 +41,19 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                         rs.getObject("createdAt", LocalDate.class),
                         rs.getObject("modifiedAt", LocalDate.class)
                         );
+            }
+        };
+    }
+
+    //페이징용 매퍼
+    private RowMapper<ScheduleResponseForPagingDto> schedulePagingRowMapper() {
+        return new RowMapper<>() {
+
+            @Override
+            public ScheduleResponseForPagingDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ScheduleResponseForPagingDto(
+                        rs.getString("title")
+                );
             }
         };
     }
@@ -137,4 +151,14 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     public int deleteSchedule(Long scheduleId) {
         return jdbcTemplate.update("delete from schedule where scheduleId = ?", scheduleId);
     }
+
+    @Override
+    //페이지 단위 조회
+    public List<ScheduleResponseForPagingDto> findAll(int page, int size) {
+        int offset = page * size;
+
+        return jdbcTemplate.query("SELECT title FROM schedule ORDER BY createdAt DESC LIMIT ? OFFSET ?", schedulePagingRowMapper(), size, offset);
+    }
+
+
 }
