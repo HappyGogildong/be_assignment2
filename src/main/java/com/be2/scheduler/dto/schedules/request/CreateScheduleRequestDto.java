@@ -1,5 +1,6 @@
 package com.be2.scheduler.dto.schedules.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
@@ -14,7 +15,7 @@ public class CreateScheduleRequestDto {
     @Length(max = 200)
     private final String contents;
 
-
+    @NotBlank
     private final String password;
 
 

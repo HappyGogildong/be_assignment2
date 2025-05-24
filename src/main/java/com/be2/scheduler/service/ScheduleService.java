@@ -45,15 +45,15 @@ public class ScheduleService implements ScheduleServiceInterface {
 
     //일정 반환(작성자명, 수정일)
     @Override
-    public List<ScheduleResponseDto> findAllByUsernameAndUpdateAtAndUserId(String username, LocalDate modifiedAt, Long userId) {
+    public List<ScheduleResponseDto> findAllByUsernameAndModifiedAtAndUserId(String username, LocalDate modifiedAt, Long userId) {
         return scheduleRepository.findAllByUsernameAndModifiedAtAndUserId(username, modifiedAt, userId);
     }
 
     //일정 반환(작성자id)
-    @Override
-    public List<ScheduleResponseDto> findAllByUserId(Long userId) {
-        return scheduleRepository.findAllByUserId(userId);
-    }
+//    @Override
+//    public List<ScheduleResponseDto> findAllByUserId(Long userId) {
+//        return scheduleRepository.findAllByUserId(userId);
+//    }
 
 
     @Override

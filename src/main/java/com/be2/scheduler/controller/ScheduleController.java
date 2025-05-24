@@ -53,7 +53,7 @@ public class ScheduleController {
             @RequestParam(required = false) LocalDate modifiedAt,
             @RequestParam(required = false) Long userId)
     {
-        return new ResponseEntity<>(scheduleService.findAllByUsernameAndUpdateAtAndUserId(username, modifiedAt,userId), HttpStatus.OK);
+        return new ResponseEntity<>(scheduleService.findAllByUsernameAndModifiedAtAndUserId(username, modifiedAt,userId), HttpStatus.OK);
     }
 
     //전체일정조회(작성자id)
@@ -64,7 +64,7 @@ public class ScheduleController {
 
     //선택일정수정(작성자명,내용 수정 가능)
     @PatchMapping("/schedules/{scheduleId}")
-    public ResponseEntity<UpdateScheduleResponseDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequestDto requestDto){
+    public ResponseEntity<UpdateScheduleResponseDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody @Valid UpdateScheduleRequestDto requestDto){
 
         return new ResponseEntity<>(scheduleService.updateSchedule(
                 scheduleId,
@@ -75,7 +75,7 @@ public class ScheduleController {
 
     //선택일정삭제
     @DeleteMapping("/schedules/{scheduleId}")
-    public ResponseEntity<DeleteScheduleResponseDto> deleteSchedule(@PathVariable Long scheduleId, @RequestBody DeleteScheduleRequestDto requestDto){
+    public ResponseEntity<DeleteScheduleResponseDto> deleteSchedule(@PathVariable Long scheduleId, @RequestBody @Valid DeleteScheduleRequestDto requestDto){
         return new ResponseEntity<>(scheduleService.deleteSchedule(scheduleId, requestDto.getPassword()), HttpStatus.OK);
     }
 
