@@ -13,7 +13,7 @@ public interface ScheduleServiceInterface {
     //선택 일정 조회
     ScheduleResponseDto findByScheduleId(Long scheduleId);
     //전체 일정 조회(작성자명, 수정일) Lv2 필수
-    List<ScheduleResponseDto> findAllByUsernameAndUpdateAt(String username, LocalDate modifiedAt);
+    List<ScheduleResponseDto> findAllByUsernameAndUpdateAtAndUserId(String username, LocalDate modifiedAt, Long userId);
     //전체 일정 조회(작성자id) Lv3
     List<ScheduleResponseDto> findAllByUserId(Long userId);
     //선택 일정 수정

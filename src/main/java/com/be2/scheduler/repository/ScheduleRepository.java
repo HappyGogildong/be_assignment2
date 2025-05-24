@@ -21,7 +21,7 @@ public interface ScheduleRepository {
     Optional<Schedule> findByScheduleId(Long scheduleId);
 
     //전체 일정 조회(작성자명, 수정일) Lv2
-    List<ScheduleResponseDto> findAllByUsernameAndModifiedAt(String username, LocalDate modifiedAt);
+    List<ScheduleResponseDto> findAllByUsernameAndModifiedAtAndUserId(String username, LocalDate modifiedAt, Long userId);
 
     //전체 일정 조회(작성자 id) Lv3
     List<ScheduleResponseDto> findAllByUserId(Long userId);

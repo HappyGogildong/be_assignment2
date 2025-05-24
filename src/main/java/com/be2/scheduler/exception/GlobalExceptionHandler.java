@@ -11,10 +11,16 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
-
     public ResponseEntity<ExceptionResponseDto> handleInvalidPasswordException(InvalidPasswordException e){
         ExceptionResponseDto exception = new ExceptionResponseDto(e.getMessage(), 401, LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ExceptionResponseDto> noSuchElementException(NoSuchElementException e){
+        ExceptionResponseDto exception = new ExceptionResponseDto(e.getMessage(), 401, LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
     }
 }

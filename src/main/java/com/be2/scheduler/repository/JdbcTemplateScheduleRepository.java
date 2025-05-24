@@ -116,7 +116,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     //전체 일정 조회(작성자명, 수정일) Lv2
     @Override
-    public List<ScheduleResponseDto> findAllByUsernameAndModifiedAt(String username, LocalDate modifiedAt) {
+    public List<ScheduleResponseDto> findAllByUsernameAndModifiedAtAndUserId(String username, LocalDate modifiedAt, Long userId) {
         StringBuilder sql = new StringBuilder("SELECT * FROM schedule WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
@@ -128,6 +128,11 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         if (modifiedAt != null) {
             sql.append(" AND modifiedAt = ?");
             params.add(modifiedAt);
+        }
+
+        if(userId != null) {
+            sql.append(" AND userId = ?");
+            params.add(userId);
         }
 
         return jdbcTemplate.query(sql.toString(), scheduleResponseDtoRowMapper(), params.toArray());

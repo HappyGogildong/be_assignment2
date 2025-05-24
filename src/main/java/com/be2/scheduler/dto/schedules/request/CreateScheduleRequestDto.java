@@ -1,6 +1,7 @@
 package com.be2.scheduler.dto.schedules.request;
 
 import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 public class CreateScheduleRequestDto {
@@ -10,6 +11,7 @@ public class CreateScheduleRequestDto {
 
     private final String title;
 
+    @Length(max = 200)
     private final String contents;
 
 

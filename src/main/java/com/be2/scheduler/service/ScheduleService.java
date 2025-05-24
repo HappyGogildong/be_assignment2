@@ -3,28 +3,35 @@ package com.be2.scheduler.service;
 import com.be2.scheduler.dto.schedules.response.*;
 import com.be2.scheduler.entity.Schedule;
 import com.be2.scheduler.exception.InvalidPasswordException;
+import com.be2.scheduler.exception.NoSuchElementException;
 import com.be2.scheduler.repository.ScheduleRepository;
 
 
+import com.be2.scheduler.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ScheduleService implements ScheduleServiceInterface {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, UserRepository userRepository) {
+
+        this.userRepository = userRepository;
         this.scheduleRepository = scheduleRepository;
     }
 
     //일정 생성
     @Override
     public CreateScheduleResponseDto createSchedule(Long userId, String username, String title, String contents, String password) {
+        if(userRepository.findById(userId).isEmpty()){
+            throw new NoSuchElementException("해당 작성자id는 없습니다");
+        }
         LocalDate localDate = LocalDate.now();
         Schedule schedule = new Schedule(userId, username, title, password, contents, localDate, localDate);
         return scheduleRepository.createSchedule(schedule);
@@ -33,14 +40,13 @@ public class ScheduleService implements ScheduleServiceInterface {
     //일정 조회(일정id로 한 개)
     @Override
     public ScheduleResponseDto findByScheduleId(Long scheduleId) {
-
         return scheduleRepository.findByScheduleId(scheduleId).orElseThrow().scheduleResponseDto(scheduleId);
     }
 
     //일정 반환(작성자명, 수정일)
     @Override
-    public List<ScheduleResponseDto> findAllByUsernameAndUpdateAt(String username, LocalDate modifiedAt) {
-        return scheduleRepository.findAllByUsernameAndModifiedAt(username, modifiedAt);
+    public List<ScheduleResponseDto> findAllByUsernameAndUpdateAtAndUserId(String username, LocalDate modifiedAt, Long userId) {
+        return scheduleRepository.findAllByUsernameAndModifiedAtAndUserId(username, modifiedAt, userId);
     }
 
     //일정 반환(작성자id)

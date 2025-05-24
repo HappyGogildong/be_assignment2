@@ -5,6 +5,7 @@ import com.be2.scheduler.dto.schedules.request.DeleteScheduleRequestDto;
 import com.be2.scheduler.dto.schedules.request.UpdateScheduleRequestDto;
 import com.be2.scheduler.dto.schedules.response.*;
 import com.be2.scheduler.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ScheduleController {
 
     //일정생성
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponseDto> createSchedule(@RequestBody CreateScheduleRequestDto requestDto){
+    public ResponseEntity<CreateScheduleResponseDto> createSchedule(@RequestBody @Valid CreateScheduleRequestDto requestDto){
 
         CreateScheduleResponseDto createScheduleResponseDto =
                 scheduleService.createSchedule(
@@ -47,18 +48,19 @@ public class ScheduleController {
 
     //전체일정조회(작성자명, 수정일)
     @GetMapping(value = "/schedules")
-    public ResponseEntity<List<ScheduleResponseDto>> findAllByUsernameAndModifiedAt(
+    public ResponseEntity<List<ScheduleResponseDto>> findAllByUsernameAndModifiedAtAndUserId(
             @RequestParam(required = false) String username,
-            @RequestParam(required = false) LocalDate modifiedAt)
+            @RequestParam(required = false) LocalDate modifiedAt,
+            @RequestParam(required = false) Long userId)
     {
-        return new ResponseEntity<>(scheduleService.findAllByUsernameAndUpdateAt(username, modifiedAt), HttpStatus.OK);
+        return new ResponseEntity<>(scheduleService.findAllByUsernameAndUpdateAtAndUserId(username, modifiedAt,userId), HttpStatus.OK);
     }
 
     //전체일정조회(작성자id)
-    @GetMapping(value = "/schedules/{userId}/schedule")
-    public ResponseEntity<List<ScheduleResponseDto>> findAllByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(scheduleService.findAllByUserId(userId));
-    }
+//    @GetMapping(value = "/schedules/{userId}/schedule")
+//    public ResponseEntity<List<ScheduleResponseDto>> findAllByUserId(@PathVariable Long userId) {
+//        return ResponseEntity.ok(scheduleService.findAllByUserId(userId));
+//    }
 
     //선택일정수정(작성자명,내용 수정 가능)
     @PatchMapping("/schedules/{scheduleId}")

@@ -13,6 +13,7 @@ public interface UserRepository {
     //회원가입
     SignUpResponseDto signUp (User user);
 
+
     //회원 조회
     Optional<User> findById(Long userId);
 
